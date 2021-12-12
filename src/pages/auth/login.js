@@ -6,7 +6,7 @@ import Menu from "../../components/Menu";
 
 const Login = () => {
     //useContext
-    const { user, setUser } = useContext(UserContext);
+    const [user, setUser] = useContext(UserContext);
 
     //useform
     const {
@@ -14,28 +14,25 @@ const Login = () => {
         handleSubmit,
         formState: { errors },
     } = useForm();
-    const onSubmit = (data) => {
-        console.log(data);
+    const onSubmit = async (data) => {
         //send fetch post request to '/api/users/login'
         //if success, set user to the response
         //if fail, set errors to the response
-        fetch("http://localhost:5000/api/users/login", {
+        const resData = await fetch("http://localhost:5000/api/users/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                if (res.status === "success") {
-                    localStorage.setItem("user", res.data.user);
-                    console.log(res.data.user);
-                    setUser(res.data.user);
-                } else {
-                    console.log(res.data.message);
-                }
-            });
+        });
+        const res = await resData.json();
+
+        if (res.status === "success") {
+            localStorage.setItem("user", JSON.stringify(res.data.user));
+            setUser(res.data.user);
+        } else {
+            console.log(res.data.message);
+        }
     };
 
     return (

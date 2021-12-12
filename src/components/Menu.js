@@ -1,23 +1,41 @@
 //import context
+import Link from "next/link";
 import React from "react";
+import { Fragment } from "react/cjs/react.production.min";
 import { UserContext } from "../utils/UserContext";
 
 const Menu = () => {
-    const { user, setUser } = React.useContext(UserContext);
-    const logout = () => {
+    const [user, setUser] = React.useContext(UserContext);
+    const logout = async () => {
+        await fetch("http://localhost:5000/api/users/logout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        localStorage.removeItem("user");
+
         setUser(null);
     };
     return (
-        <div>
+        <menu>
+            <Link href="/">Shop</Link>
             {user ? (
-                <div>
-                    <h1>Welcome {user.name}</h1>
-                    <button onClick={logout}>Logout</button>
-                </div>
+                <Fragment>
+                    <h4>Welcome {user["firstName"]}</h4>
+                    <Link href="/create-product">Create Product</Link>
+                    <a onClick={logout} href="#">
+                        Logout
+                    </a>
+                </Fragment>
             ) : (
-                <h1>Please login</h1>
+                <Fragment>
+                    <Link href="/auth/login">Login</Link>
+                    <Link href="/auth/registration">Register</Link>
+                </Fragment>
             )}
-        </div>
+        </menu>
     );
 };
 

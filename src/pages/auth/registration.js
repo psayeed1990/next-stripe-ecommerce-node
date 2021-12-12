@@ -6,7 +6,7 @@ import Menu from "../../components/Menu";
 
 const Registration = () => {
     //useContext
-    const { user, setUser } = useContext(UserContext);
+    const [user, setUser] = useContext(UserContext);
     //useform
     const {
         register,
@@ -27,8 +27,7 @@ const Registration = () => {
         );
         const resData = await response.json();
         if (resData.status === "success") {
-            console.log(resData.data.user);
-            localStorage.setItem("user", resData.data.user);
+            localStorage.setItem("user", JSON.stringify(resData.data.user));
             setUser(resData.data.user);
         }
     };

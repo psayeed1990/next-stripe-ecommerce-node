@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import Menu from "../components/Menu";
 import styles from "../styles/Home.module.css";
 
 //this is the shop page
@@ -16,10 +17,7 @@ export default function Home() {
             </Head>
 
             <main className={styles.main}>
-                <h1 className={styles.title}>
-                    MERN Stack and Stripe Tutorial on{" "}
-                    <a href="https://qoddi.com">Qoddi</a>
-                </h1>
+                <Menu />
 
                 <p className={styles.description}>
                     Get started by editing{" "}

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const UserContext = createContext();
 
@@ -9,11 +9,10 @@ export const UserProvider = (props) => {
         const userData = localStorage.getItem("user");
 
         if (userData) {
-            console.log("userData", userData);
-            return setUser(userData);
+            setUser(JSON.parse(userData));
+        } else {
+            setUser(null);
         }
-
-        setUser(null);
     }, []);
 
     return (
