@@ -6,16 +6,9 @@ import { UserContext } from "../utils/UserContext";
 
 const Menu = () => {
     const [user, setUser] = React.useContext(UserContext);
-    const logout = async () => {
-        await fetch("http://localhost:5000/api/users/logout", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
 
+    const logout = () => {
         localStorage.removeItem("user");
-
         setUser(null);
     };
     return (

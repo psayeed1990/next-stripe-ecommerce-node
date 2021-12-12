@@ -1,4 +1,4 @@
-import react, { useContext, useEffect, useState } from "react";
+import react, { Fragment, useContext, useEffect, useState } from "react";
 //import UserContext
 import { UserContext } from "../../utils/UserContext";
 import { useForm } from "react-hook-form";
@@ -7,7 +7,7 @@ import Menu from "../../components/Menu";
 const Create = () => {
     const [categrories, categoriesSet] = useState([]);
     //useContext
-    const { user, setUser } = useContext(UserContext);
+    const [user, setUser] = useContext(UserContext);
 
     //useEffect to get categories
     useEffect(() => {
@@ -28,9 +28,12 @@ const Create = () => {
     const onSubmit = (data) => {
         fetch("http://localhost:5000/api/products", {
             method: "POST",
+            credentials: "include",
             headers: {
+                Accept: "application/json",
                 "Content-Type": "application/json",
-                withCredentials: true,
+                //add authorization header
+                Authorization: `Bearer ${user.token}`,
             },
             body: JSON.stringify(data),
         });
@@ -90,8 +93,11 @@ const Create = () => {
                         required: "Category is required",
                     })}
                 >
+                    <option disabled selected>
+                        Select Category
+                    </option>
                     {categrories.map((category) => (
-                        <option key={category.id} value={category.id}>
+                        <option key={category._id} value={category._id}>
                             {category.name}
                         </option>
                     ))}

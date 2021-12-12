@@ -1,10 +1,27 @@
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
+import { useContext } from "react";
 import Menu from "../components/Menu";
 import styles from "../styles/Home.module.css";
+import { UserContext } from "../utils/UserContext";
 
 //this is the shop page
-export default function Home() {
+const Home = ({ products }) => {
+    const [user, setUser] = useContext(UserContext);
+    const buyNow = (id) => {
+        const buy = fetch(`http://localhost:5000/api/orders/`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                //add authorization header
+                Authorization: `Bearer ${user.token}`,
+            },
+            body: JSON.stringify({ id }),
+        });
+    };
     return (
         <div className={styles.container}>
             <Head>
@@ -25,43 +42,21 @@ export default function Home() {
                 </p>
 
                 <div className={styles.grid}>
-                    <a href="https://nextjs.org/docs" className={styles.card}>
-                        <h2>Documentation &rarr;</h2>
-                        <p>
-                            Find in-depth information about Next.js features and
-                            API.
-                        </p>
-                    </a>
-
-                    <a href="https://nextjs.org/learn" className={styles.card}>
-                        <h2>Learn &rarr;</h2>
-                        <p>
-                            Learn about Next.js in an interactive course with
-                            quizzes!
-                        </p>
-                    </a>
-
-                    <a
-                        href="https://github.com/vercel/next.js/tree/master/examples"
-                        className={styles.card}
-                    >
-                        <h2>Examples &rarr;</h2>
-                        <p>
-                            Discover and deploy boilerplate example Next.js
-                            projects.
-                        </p>
-                    </a>
-
-                    <a
-                        href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-                        className={styles.card}
-                    >
-                        <h2>Deploy &rarr;</h2>
-                        <p>
-                            Instantly deploy your Next.js site to a public URL
-                            with Vercel.
-                        </p>
-                    </a>
+                    {products.map((product) => (
+                        <div className={styles.card} key={product.id}>
+                            <Link href={`/products/${product._id}`} passHref>
+                                <h3>{product.name}</h3>
+                            </Link>
+                            <p>{product.description}</p>
+                            <p>{product.price}</p>
+                            <button
+                                className="buy-now"
+                                onClick={() => buyNow(product._id)}
+                            >
+                                Buy Now
+                            </button>
+                        </div>
+                    ))}
                 </div>
             </main>
 
@@ -76,10 +71,18 @@ export default function Home() {
             </footer>
         </div>
     );
-}
+};
 
-export async function getStaticProps() {
-    return {
-        props: {},
-    };
-}
+export default Home;
+
+export const getStaticProps = async (context) => {
+    const response = await fetch("http://localhost:5000/api/products/", {
+        method: "GET",
+    });
+
+    const res = await response.json();
+
+    const products = res.data.data ? res.data.data : [];
+
+    return { props: { products }, revalidate: 1 };
+};

@@ -7,7 +7,7 @@ import Menu from "../../components/Menu";
 const CreateCategory = () => {
     const [categrories, categoriesSet] = useState([]);
     //useContext
-    const { user, setUser } = useContext(UserContext);
+    const [user, setUser] = useContext(UserContext);
 
     //useform
     const {
@@ -17,12 +17,15 @@ const CreateCategory = () => {
     } = useForm();
     const onSubmit = (data) => {
         try {
+            console.log(user);
             fetch("http://localhost:5000/api/categories", {
                 method: "POST",
                 credentials: "include",
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
+                    //add authorization header
+                    Authorization: `Bearer ${user.token}`,
                 },
                 body: JSON.stringify(data),
             });
