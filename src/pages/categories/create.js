@@ -1,10 +1,10 @@
 import react, { useContext, useState } from "react";
 //import UserContext
-import { UserContext } from "../utils/UserContext";
+import { UserContext } from "../../utils/UserContext";
 import { useForm } from "react-hook-form";
-import Menu from "../components/Menu";
+import Menu from "../../components/Menu";
 
-const Create = () => {
+const CreateCategory = () => {
     const [categrories, categoriesSet] = useState([]);
     //useContext
     const { user, setUser } = useContext(UserContext);
@@ -16,15 +16,21 @@ const Create = () => {
         formState: { errors },
     } = useForm();
     const onSubmit = (data) => {
-        fetch("http://localhost:5000/api/products", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${user.token}`,
-            },
-            body: JSON.stringify(data),
-        });
-        console.log(data);
+        try {
+            fetch("http://localhost:5000/api/categories", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -34,16 +40,16 @@ const Create = () => {
                 <input
                     placeholder=" Name"
                     {...register("name", {
-                        required: "Product Name is required",
+                        required: "Category Name is required",
                         minLength: {
                             value: 2,
                             message:
-                                "Product Name must be at least 2 characters long",
+                                "Category Name must be at least 2 characters long",
                         },
                         maxLength: {
                             value: 32,
                             message:
-                                "Product Name must be at most 32 characters long",
+                                "Category Name must be at most 32 characters long",
                         },
                     })}
                 />
@@ -68,25 +74,12 @@ const Create = () => {
                 {errors.description?.message}
 
                 <input
-                    placeholder="Price"
-                    {...register("price", {
-                        required: "Price is required",
+                    placeholder="Slug"
+                    {...register("slug", {
+                        required: "Slug is required",
                     })}
                 />
-                {errors.price?.message}
-
-                <select
-                    {...register("category", {
-                        required: "Category is required",
-                    })}
-                >
-                    {categrories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                            {category.name}
-                        </option>
-                    ))}
-                </select>
-                {errors.category?.message}
+                {errors.slug?.message}
 
                 <button type="submit">Submit</button>
             </form>
@@ -94,4 +87,4 @@ const Create = () => {
     );
 };
 
-export default Create;
+export default CreateCategory;

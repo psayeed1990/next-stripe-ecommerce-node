@@ -24,7 +24,8 @@ const Menu = () => {
             {user ? (
                 <Fragment>
                     <h4>Welcome {user["firstName"]}</h4>
-                    <Link href="/create-product">Create Product</Link>
+                    <Link href="/products/create">Create Product</Link>
+                    <Link href="/categories/create">Create Category</Link>
                     <a onClick={logout} href="#">
                         Logout
                     </a>
